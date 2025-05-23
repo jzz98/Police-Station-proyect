@@ -13,14 +13,16 @@ from models.entities.User import User
 
 class RegisterController:
     @staticmethod
-    def register(username, password, email,fullname, db):
+    def register(username, password, email, fullname, db):
         user = User(0, username, password, email, fullname, )
         
         try:
             ModelUser.register(db, user)
             return True
         except Exception as exp:
+            print(f"Error al registrar usuario: {exp}")
             return False
+            
 
     @staticmethod
     def login(token, username, password, db):

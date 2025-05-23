@@ -35,7 +35,7 @@ class MainRoutes:
                 return RegisterController.login(self.token, username, password, self.db)
 
                     
-            return render_template('auth/login.html')
+            return render_template('auth/register_template.html')
 
 
         @self.MainRoutes.route('/register', methods=['GET', 'POST'])
@@ -46,15 +46,16 @@ class MainRoutes:
                 fullname = request.form.get('fullname')
                 email = request.form.get('email')
 
-                user = RegisterController.register(username, password, email,fullname, self.db)
+                user = RegisterController.register(username, password, email, fullname, self.db)
                 if user:
-                    return redirect('/login')
-                
-                flash('Hubo un error en la solicitud')
-                return render_template('auth/register.html')
+                    return redirect('/home')
+                    # pass
+                else:
+                    flash('Hubo un error en la solicitud')
+                    return render_template('auth/register_template.html')
 
             else:
-                return render_template('auth/register.html')
+                return render_template('auth/register_template.html')
         
         @self.MainRoutes.route('/home')
         def homepage():

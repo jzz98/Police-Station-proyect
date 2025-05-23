@@ -35,8 +35,8 @@ class ModelUser():
 
             hashed_password = generate_password_hash(user.password)
 
-            sql = """INSERT INTO Users (username, password_user, fullname, Email,Type_usr) 
-                     VALUES (%s, %s, %s, %s)"""
+            sql = """INSERT INTO Users (username, password_user, fullname, Email, Type_usr) 
+                     VALUES (%s, %s, %s, %s, %s)"""
 
             cursor.execute(sql, (user.username, hashed_password, user.fullname, user.email,'U'))
             db.connection.commit()
