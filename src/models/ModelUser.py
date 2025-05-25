@@ -34,11 +34,17 @@ class ModelUser():
             cursor = db.connection.cursor()
 
             hashed_password = generate_password_hash(user.password)
+            sql1 = """SELECT * FROM Users WHERE username = %s"""
+            
+            user_logged = cursor.execute(sql1, (user.username, ))
 
-            sql = """INSERT INTO Users (username, password_user, fullname, Email, Type_usr) 
+            if user_logged > 0:
+                return False
+            
+            sql2 = """INSERT INTO Users (username, password_user, fullname, Email, Type_usr) 
                      VALUES (%s, %s, %s, %s, %s)"""
 
-            cursor.execute(sql, (user.username, hashed_password, user.fullname, user.email,'U'))
+            cursor.execute(sql2, (user.username, hashed_password, user.fullname, user.email,'U'))
             db.connection.commit()
 
             return True 

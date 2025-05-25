@@ -17,11 +17,13 @@ class RegisterController:
         user = User(0, username, password, email, fullname, )
         
         try:
-            ModelUser.register(db, user)
-            return True
+            singin_user = ModelUser.register(db, user)
+            if singin_user:
+                return True
+            else:
+                return False
         except Exception as exp:
-            print(f"Error al registrar usuario: {exp}")
-            return False
+            raise Exception(exp)
             
 
     @staticmethod
@@ -32,15 +34,15 @@ class RegisterController:
         }
 
         # Verificar usuario desde la base de datos
-        user = User(0, username, password)
+        user = User(0, username, password, email="")
         logged_user = ModelUser.login(db, user)
 
         if logged_user:
             login_user(logged_user)
 
             # Generar token
-            token = token.write_token(data=data)
-
+            token = token.write_token(data)
+            print(token)
             # Preparar respuesta y agregar cookie con el token
             response = make_response(redirect('/admin' if logged_user.__class__.__name__ == 'Admin' else '/home'))
             response.set_cookie('token', token, httponly=True)

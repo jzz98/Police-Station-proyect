@@ -9,8 +9,9 @@ class Token:
         now = datetime.now()
         return now + timedelta(days=days)
 
+    
     def write_token(self, data: dict):
-        token = encode(payload={**data, "exp": self.expired_time(2)}, key=getenv("SECRET"), algorithm="HS256")
+        token = encode(payload={**data, "exp": self.expired_time(2)}, key=getenv("SECRET_DECODE"), algorithm="HS256")
         return token
     
     @staticmethod

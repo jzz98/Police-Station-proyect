@@ -25,17 +25,18 @@ class MainRoutes:
     def config_routes(self):
         @self.MainRoutes.route('/')
         def _ ():
-            return redirect('login')
+            return redirect('home')
         
         @self.MainRoutes.route('/login', methods=['GET', 'POST'])
         def login():
             if request.method == "POST":
                 username = request.form.get('username')
                 password = request.form.get('password')
-                return RegisterController.login(self.token, username, password, self.db)
-
-                    
-            return render_template('auth/register_template.html')
+                
+                result = RegisterController.login(self.token, username, password, self.db)
+                return result
+            
+            return render_template('auth/login.html')
 
 
         @self.MainRoutes.route('/register', methods=['GET', 'POST'])
@@ -51,11 +52,12 @@ class MainRoutes:
                     return redirect('/home')
                     # pass
                 else:
-                    flash('Hubo un error en la solicitud')
-                    return render_template('auth/register_template.html')
+                    print('Usuario registradp1')
+                    flash('Usuario registrado')
+                    return render_template('auth/register.html')
 
             else:
-                return render_template('auth/register_template.html')
+                return render_template('auth/register.html')
         
         @self.MainRoutes.route('/home')
         def homepage():
