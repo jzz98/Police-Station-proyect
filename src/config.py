@@ -8,7 +8,7 @@ class DevelopmentConfig(Config):
     MYSQL_HOST = 'localhost'
     MYSQL_USER = 'root'
     MYSQL_PASSWORD = getenv('PASSWORD_DB')
-    MYSQL_DB = 'Estacion_policial'    
+    MYSQL_DB = getenv("DB_NAME")    
 
 config = {
     'development': DevelopmentConfig

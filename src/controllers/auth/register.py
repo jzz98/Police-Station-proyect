@@ -47,6 +47,6 @@ class RegisterController:
             response = make_response(redirect('/admin' if logged_user.__class__.__name__ == 'Admin' else '/home'))
             response.set_cookie('token', token, httponly=True)
             return response
-
+ 
         flash('Usuario o contraseña incorrectos')
         return redirect('/login')

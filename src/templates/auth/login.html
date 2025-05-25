@@ -55,7 +55,15 @@
                         </div>
                         <a href="javascript:void(0)" class="text-sm text-blue-700 hover:underline">¿Olvidó su contraseña?</a>
                     </div>
-                    
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="px-4 py-2 rounded text-red-800 text-center text-[18px] font-bolder bg-red-200">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
                     <button type="submit" class="btn-submit w-full bg-blue-700 text-white py-3 px-4 rounded-md font-medium">
                         Iniciar Sesión
                     </button>
