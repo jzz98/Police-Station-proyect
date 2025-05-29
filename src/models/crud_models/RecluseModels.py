@@ -35,43 +35,40 @@ class Recluses:
     def Create(cls, db, data):
         try:
             instance = cls()
-            file1, file2 = instance.upload_file()
-            if file1 is None or file2 is None:
-                return False
+            print('datos', data)
 
-            # Sanitizar nombres de archivo
-            filename1 = secure_filename(file1.filename)
-            filename2 = secure_filename(file2.filename)
-            
-            file1_path = os.path.join(instance.upload_folder, filename1)
-            file2_path = os.path.join(instance.upload_folder, filename2)
+            # file1, file2 = instance.upload_file()
+            # if file1 is None or file2 is None:
+            #     return False
+
+            # # Sanitizar nombres de archivo
+            # filename1 = file1.filename
+            # filename2 = file2.filename
+
+            # file1_path = os.path.join(instance.upload_folder, filename1)
+            # file2_path = os.path.join(instance.upload_folder, filename2)
 
             cursor = db.connection.cursor()
-            
+
             sql = """INSERT INTO Reclusos(
-                Nombre, Apellido, Alias, Datos_biometricos, Datos_personales, 
-                Fecha_entrada, Nombre_carcel, Condenas, Oficial_responsable, 
-                Activo, Cantidad_condenas, Monitoreo) 
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                Nombre, Apellido, ALias, Fecha_entrada, INT_Carcel, Numero_condenas, 
+                Oficial_encargado, Estado) 
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s)"""
 
             cursor.execute(sql, (
                 data.get('Nombre'),
                 data.get('Apellido'),
-                data.get('Alias'),
-                filename1,  # Usar nombre sanitizado
-                filename2,  # Usar nombre sanitizado
+                data.get('ALias'),
                 data.get('Fecha_entrada'),
-                data.get('Nombre_carcel'),
-                data.get('Condenas'),
-                data.get('Oficial_responsable'),
-                data.get('Activo'),
-                data.get('Cantidad_condenas'),
-                data.get('Monitoreo')
+                data.get('INT_Carcel'),
+                data.get('Numero_condenas'),
+                data.get('Oficial_encargado'),
+                data.get('Estado')
             ))
-
+            
             db.connection.commit()
-            file1.save(file1_path)
-            file2.save(file2_path)
+            # file1.save(file1_path)
+            # file2.save(file2_path)
             
             flash('Archivos subidos con éxito')
             return True
@@ -79,14 +76,44 @@ class Recluses:
         except Exception as exp:
             db.connection.rollback()
             flash(f'Error al procesar la solicitud: {str(exp)}')
-            return False
-        
+            raise Exception(exp)  
+              
     @classmethod
-    def show(cls, db, id):
+    def edit(cls, db, id):
         try:
             cursor = db.connection.cursor()
             sql = "SELECT * FROM Reclusos WHERE ID=%s"
             cursor.execute(sql, (id,))
-            return cursor.fetchone()
+            row =  cursor.fetchone()
+            return row
         except Exception as exp:
             raise Exception(exp)
+        
+    def update(cls, id, db, data):
+        try:
+            cursor = db.connection.cursor()
+
+            sql = """
+                UPDATE Reclusos 
+                SET Nombre, Apellido, ALias, Fecha_entrada, INT_Carcel, Numero_condenas, 
+                Oficial_encargado, Estado WHERE ID = %s
+                """
+            valores = (
+                data.get('Nombre'),
+                data.get('Apellido'),
+                data.get('ALias'),
+                data.get('Fecha_entrada'),
+                data.get('INT_Carcel'),
+                data.get('Numero_condenas'),
+                data.get('Oficial_encargado'),
+                data.get('Estado'),
+                id
+            )
+
+            cursor.execute(sql, valores)
+            cursor.connection.commit()
+            
+            return True
+        except Exception as exp:
+            raise Exception(exp)
+        

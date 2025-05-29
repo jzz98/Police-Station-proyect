@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Police Department Most Wanted</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tailwdind.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mostwanted.css')}}">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <header class="bg-blue-900 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center">
+          <i class="fas fa-shield-alt text-2xl mr-2"></i>
+          <h1 class="text-xl font-bold">Police Department</h1>
+        </div>
+        <nav>
+          <ul class="flex space-x-4">
+            <li><a href="javascript:void(0)" class="hover:text-blue-200">Home</a></li>
+            <li><a href="javascript:void(0)" class="hover:text-blue-200">About</a></li>
+            <li><a href="javascript:void(0)" class="hover:text-blue-200">Services</a></li>
+            <li><a href="javascript:void(0)" class="font-bold">Most Wanted</a></li>
+            <li><a href="javascript:void(0)" class="hover:text-blue-200">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>  
+  </header>
+
+  <main class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Most Wanted Individuals</h2>
+      
+      <!-- Category Tabs -->
+      <div class="border-b border-gray-200 mb-6">
+        <ul class="flex flex-wrap -mb-px" id="category-tabs">
+          <li class="mr-2">
+            <a href="javascript:void(0)" class="inline-block py-2 px-4 text-lg active-tab" data-category="top10">Top 10 Most Wanted</a>
+          </li>
+          <li class="mr-2">
+            <a href="javascript:void(0)" class="inline-block py-2 px-4 text-lg text-gray-500 hover:text-gray-800" data-category="terrorists">Terrorists</a>
+          </li>
+          <li class="mr-2">
+            <a href="javascript:void(0)" class="inline-block py-2 px-4 text-lg text-gray-500 hover:text-gray-800" data-category="fugitives">Fugitives</a>
+          </li>
+          <li class="mr-2">
+            <a href="javascript:void(0)" class="inline-block py-2 px-4 text-lg text-gray-500 hover:text-gray-800" data-category="missing">Missing Persons</a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex-grow">
+          <div class="relative">
+            <input type="text" id="search" placeholder="Search by name or description..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+        <div class="flex space-x-4">
+          <select id="sort-by" class="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Sort by</option>
+            <option value="date">Last Sighting Date</option>
+            <option value="risk">Risk Level</option>
+            <option value="age">Age</option>
+          </select>
+          <button id="refresh-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+            <i class="fas fa-sync-alt mr-2"></i> Refresh Data
+          </button>
+        </div>
+      </div>
+      
+      <!-- Loading State -->
+      <div id="loading" class="hidden flex flex-col items-center justify-center py-12">
+        <div class="loader h-12 w-12 rounded-full border-4 border-gray-200"></div>
+        <p class="mt-4 text-lg text-gray-600">Loading data...</p>
+      </div>
+      
+      <!-- Error State -->
+      <div id="error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+        <div class="flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          <p>There was an error loading the data. Please try again.</p>
+        </div>
+      </div>
+      
+      <!-- No Results State -->
+      <div id="no-results" class="hidden text-center py-12">
+        <i class="fas fa-search text-gray-400 text-5xl mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-600">No results found</h3>
+        <p class="text-gray-500">Try adjusting your search or filters</p>
+      </div>
+      
+      <!-- Content Grid -->
+      <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Cards will be populated here -->
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div class="mb-4 md:mb-0">
+          <h3 class="text-xl font-bold mb-2">Police Department</h3>
+          <p class="text-gray-400">Protecting and serving our community</p>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-2">Contact</h4>
+          <p class="text-gray-400">Emergency: 911</p>
+          <p class="text-gray-400">Non-Emergency: 555-123-4567</p>
+          <p class="text-gray-400">tips@policedepartment.gov</p>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-6 pt-6 text-center text-gray-400">
+        <p>&copy; 2025 Police Department. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script id="app-script">
+    // Sample data structure - this would normally come from an API
+    const mostWantedData = {
+      top10: [
+        { id: 1, name: "John Doe", age: 35, location: "Chicago, IL", riskLevel: "High", lastSeen: "2025-01-15", description: "Wanted for armed robbery and assault", imageUrl: "https://cdn.pixabay.com/photo/2015/07/11/19/23/man-841049_960_720.jpg", details: "Known to be armed and dangerous. Has previous convictions for violent crimes. May be using alias 'Jack Davis'." },
+        { id: 2, name: "Jane Smith", age: 42, location: "Miami, FL", riskLevel: "High", lastSeen: "2025-02-20", description: "Wanted for fraud and identity theft", imageUrl: "https://cdn.pixabay.com/photo/2018/01/15/07/51/woman-3083383_960_720.jpg", details: "Suspected of running a large-scale fraud operation. Highly skilled with computers and may be altering her appearance." },
+        // Placeholder for more data
+      ],
+      terrorists: [
+        { id: 3, name: "Michael Johnson", age: 38, location: "Unknown", riskLevel: "Extreme", lastSeen: "2024-11-03", description: "Wanted for terrorist activities", imageUrl: "https://cdn.pixabay.com/photo/2016/11/21/12/42/beard-1845166_960_720.jpg", details: "International warrant issued. Known to have connections with extremist groups. May be traveling with false documentation." },
+        { id: 4, name: "Sarah Williams", age: 29, location: "Last seen in Dallas, TX", riskLevel: "High", lastSeen: "2024-12-12", description: "Wanted for domestic terrorism", imageUrl: "https://cdn.pixabay.com/photo/2016/11/29/13/14/attractive-1869761_960_720.jpg", details: "Suspected of planning attacks on government facilities. Has expertise in explosives and chemical weapons." },
+        // Placeholder for more data
+      ],
+      fugitives: [
+        { id: 5, name: "Robert Brown", age: 31, location: "New York, NY", riskLevel: "Medium", lastSeen: "2025-03-01", description: "Escaped custody during transfer", imageUrl: "https://cdn.pixabay.com/photo/2017/08/12/18/31/male-2634974_960_720.jpg", details: "Escaped while being transferred between facilities. Has history of theft and burglary. Known associates in the New York area." },
+        { id: 6, name: "Emily Davis", age: 27, location: "Portland, OR", riskLevel: "Medium", lastSeen: "2025-02-15", description: "Failed to appear for sentencing", imageUrl: "https://cdn.pixabay.com/photo/2017/02/16/23/10/smile-2072907_960_720.jpg", details: "Failed to appear for sentencing on narcotics charges. Has ties to drug trafficking organizations across the West Coast." },
+        // Placeholder for more data
+      ],
+      missing: [
+        { id: 7, name: "Kevin Wilson", age: 12, location: "Seattle, WA", riskLevel: "High", lastSeen: "2025-03-10", description: "Missing since March 10", imageUrl: "https://cdn.pixabay.com/photo/2015/07/28/09/18/boy-864140_960_720.jpg", details: "Last seen walking home from school. Wearing blue jeans and a red t-shirt. Family extremely concerned as this is out of character." },
+        { id: 8, name: "Amanda Taylor", age: 16, location: "Austin, TX", riskLevel: "Medium", lastSeen: "2025-03-05", description: "Missing teenager", imageUrl: "https://cdn.pixabay.com/photo/2018/01/13/19/39/fashion-3080644_960_720.jpg", details: "May have run away from home. Active on social media until March 5th. Could be in the company of older individuals." },
+        // Placeholder for more data
+      ]
+    };
+
+    // DOM elements
+    const tabLinks = document.querySelectorAll('#category-tabs a');
+    const contentGrid = document.getElementById('content-grid');
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const noResultsEl = document.getElementById('no-results');
+    const searchInput = document.getElementById('search');
+    const sortBySelect = document.getElementById('sort-by');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    // Current category and filtered data
+    let currentCategory = 'top10';
+    let filteredData = [];
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if we have cached data in localStorage
+      const cachedData = localStorage.getItem('mostWantedData');
+      
+      if (cachedData) {
+        // Use cached data
+        renderContent();
+      } else {
+        // Fetch fresh data
+        fetchData();
+      }
+      
+      // Set up event listeners
+      setupEventListeners();
+    });
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Category tab clicks
+      tabLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Update active tab
+          tabLinks.forEach(tab => tab.classList.remove('active-tab', 'text-gray-800'));
+          tabLinks.forEach(tab => tab.classList.add('text-gray-500'));
+          link.classList.add('active-tab');
+          link.classList.remove('text-gray-500');
+          
+          // Update current category and render
+          currentCategory = link.dataset.category;
+          applyFiltersAndRender();
+        });
+      });
+      
+      // Search input
+      searchInput.addEventListener('input', () => {
+        applyFiltersAndRender();
+      });
+      
+      // Sort dropdown
+      sortBySelect.addEventListener('change', () => {
+        applyFiltersAndRender();
+      });
+      
+      // Refresh button
+      refreshBtn.addEventListener('click', () => {
+        fetchData();
+      });
+    }
+
+    // Fetch data from API (simulated)
+    function fetchData() {
+      showLoading();
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        try {
+          // In a real app, this would be a fetch call to your API endpoint
+          // For now, we'll use our sample data
+          
+          // Save to localStorage
+          localStorage.setItem('mostWantedData', JSON.stringify(mostWantedData));
+          
+          hideLoading();
+          renderContent();
+        } catch (err) {
+          hideLoading();
+          showError();
+          console.error('Error fetching data:', err);
+        }
+      }, 1000);
+    }
+
+    // Apply search and sort filters, then render
+    function applyFiltersAndRender() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const sortBy = sortBySelect.value;
+      
+      // Filter data based on search term
+      filteredData = mostWantedData[currentCategory].filter(item => {
+        const nameMatch = item.name.toLowerCase().includes(searchTerm);
+        const descMatch = item.description.toLowerCase().includes(searchTerm);
+        return nameMatch || descMatch;
+      });
+      
+      // Sort data if needed
+      if (sortBy) {
+        sortData(sortBy);
+      }
+      
+      // Render the filtered data
+      renderContent();
+    }
+
+    // Sort data based on selected criteria
+    function sortData(sortBy) {
+      switch (sortBy) {
+        case 'date':
+          filteredData.sort((a, b) => new Date(b.lastSeen) - new Date(a.lastSeen));
+          break;
+        case 'risk':
+          const riskOrder = { 'Extreme': 3, 'High': 2, 'Medium': 1, 'Low': 0 };
+          filteredData.sort((a, b) => riskOrder[b.riskLevel] - riskOrder[a.riskLevel]);
+          break;
+        case 'age':
+          filteredData.sort((a, b) => b.age - a.age);
+          break;
+      }
+    }
+
+    // Render content to the grid
+    function renderContent() {
+      // Hide all state indicators
+      hideLoading();
+      hideError();
+      hideNoResults();
+      
+      // If we don't have filteredData populated yet, initialize it with current category
+      if (!filteredData.length && !searchInput.value) {
+        filteredData = mostWantedData[currentCategory];
+      }
+      
+      // If no results after filtering, show no results message
+      if (filteredData.length === 0) {
+        showNoResults();
+        contentGrid.innerHTML = '';
+        return;
+      }
+      
+      // Clear the grid
+      contentGrid.innerHTML = '';
+      
+      // Create cards for each item
+      filteredData.forEach(person => {
+        const card = createPersonCard(person);
+        contentGrid.appendChild(card);
+      });
+    }
+
+    // Create a card for a person
+    function createPersonCard(person) {
+      const div = document.createElement('div');
+      div.className = 'card bg-white rounded-lg shadow-md overflow-hidden fade-in';
+      
+      // Create risk level badge class based on risk level
+      let riskBadgeClass = 'inline-block px-2 py-1 text-xs font-semibold rounded text-white ';
+      switch (person.riskLevel) {
+        case 'Extreme':
+          riskBadgeClass += 'bg-red-600';
+          break;
+        case 'High':
+          riskBadgeClass += 'bg-orange-500';
+          break;
+        case 'Medium':
+          riskBadgeClass += 'bg-yellow-500';
+          break;
+        default:
+          riskBadgeClass += 'bg-blue-500';
+      }
+      
+      div.innerHTML = `
+        <div class="relative">
+          <img src="${person.imageUrl}" alt="${person.name}" class="w-full h-48 object-cover">
+          <span class="${riskBadgeClass} absolute top-2 right-2">${person.riskLevel} Risk</span>
+        </div>
+        <div class="p-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-1">${person.name}</h3>
+          <div class="flex items-center text-gray-600 mb-2">
+            <i class="fas fa-user-clock mr-2"></i>
+            <span>Age: ${person.age}</span>
+          </div>
+          <div class="flex items-center text-gray-600 mb-2">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            <span>${person.location}</span>
+          </div>
+          <div class="flex items-center text-gray-600 mb-2">
+            <i class="fas fa-calendar-alt mr-2"></i>
+            <span>Last seen: ${formatDate(person.lastSeen)}</span>
+          </div>
+          <p class="text-gray-700 mt-2">${person.description}</p>
+          <div class="card-details mt-3 pt-3 border-t border-gray-200">
+            <h4 class="font-semibold text-gray-800 mb-1">Additional Details:</h4>
+            <p class="text-gray-700">${person.details}</p>
+            <div class="mt-3">
+              <a href="javascript:void(0)" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-semibold">
+                <i class="fas fa-info-circle mr-1"></i> Full Profile
+              </a>
+              <a href="javascript:void(0)" class="inline-block bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-semibold ml-2">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Report Sighting
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      return div;
+    }
+
+    // Format date to more readable format
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    // Show/hide state functions
+    function showLoading() {
+      loadingEl.classList.remove('hidden');
+      contentGrid.classList.add('hidden');
+    }
+    
+    function hideLoading() {
+      loadingEl.classList.add('hidden');
+      contentGrid.classList.remove('hidden');
+    }
+    
+    function showError() {
+      errorEl.classList.remove('hidden');
+    }
+    
+    function hideError() {
+      errorEl.classList.add('hidden');
+    }
+    
+    function showNoResults() {
+      noResultsEl.classList.remove('hidden');
+    }
+    
+    function hideNoResults() {
+      noResultsEl.classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

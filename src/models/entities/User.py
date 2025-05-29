@@ -5,7 +5,7 @@ class User(UserMixin):
     def __init__(self, id, username, password, email, fullname="", type_usr="U"):
         self.id = id
         self.username = username
-        self.password = password  # guardamos el hash
+        self.password = password  
         self.fullname = fullname
         self.email = email
         self.type_usr = type_usr
@@ -15,5 +15,5 @@ class User(UserMixin):
         return check_password_hash(hashed_password, password)
 
 class Admin(User):
-    def __init__(self, id, username, password, email, fullname=""):
-        super().__init__(id, username, password, email, fullname)
+    def __init__(self, id, username, password, email, fullname, type_usr="A"):
+        super().__init__(id, username, password, email, fullname, type_usr)

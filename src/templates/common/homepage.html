@@ -1,721 +1,1034 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Estación de Policía</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style id="app-style">
-    .alert-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 50;
-    }
-    
-    .modal-content {
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .news-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-    
-    .news-content.expanded {
-      max-height: 500px;
-    }
-  </style>
-</head>
-<body class="bg-gray-100 font-sans">
-  <!-- Header Section -->
-  <header class="bg-blue-800 text-white shadow-lg">
-    <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
-      <div class="flex items-center mb-2 md:mb-0">
-        <div class="mr-3">
-          <i class="fas fa-shield-alt text-3xl text-yellow-400"></i>
-        </div>
-        <div>
-          <h1 class="text-2xl font-bold">Estación de Policía Nacional</h1>
-          <p class="text-sm text-blue-200">Protegemos y Servimos</p>
-        </div>
-      </div>
-      <div class="flex items-center">
-        <div class="mr-4">
-          <span class="font-semibold">Emergencias:</span>
-          <span class="text-red-300">123</span>
-        </div>
-        <a href="javascript:void(0)" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-bold transition mr-4">
-          Reportar Emergencia
-        </a>
-        <a id="" href="/login" class="bg-white text-blue-800 hover:bg-gray-100 px-4 py-2 rounded font-medium transition mr-2">
-          Iniciar Sesión
-        </a>
-        <a href="/register"class="bg-white text-blue-800 hover:bg-gray-100 px-4 py-2 rounded font-medium transition">
-          Registrarse
-        </a>
-      </div>
-    </div>
-    
-    <!-- Navigation Bar -->
-    <nav class="bg-blue-900">
-      <div class="container mx-auto px-4">
-        <ul class="flex flex-wrap justify-center md:justify-start text-sm">
-          <li class="py-3 px-4 hover:bg-blue-700 font-medium transition"><a href="#home">Inicio</a></li>
-          <li class="py-3 px-4 hover:bg-blue-700 font-medium transition"><a href="#contact">Contacto y Dirección</a></li>
-          <li class="py-3 px-4 hover:bg-blue-700 font-medium transition"><a href="#alerts">Alertas de Emergencia</a></li>
-          <li class="py-3 px-4 hover:bg-blue-700 font-medium transition"><a href="#map">Mapa Interactivo</a></li>
-          <li class="py-3 px-4 hover:bg-blue-700 font-medium transition"><a href="#news">Noticias y Actualizaciones</a></li>
-        </ul>
-      </div>
-    </nav>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estación de Policía</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tailwdind.css')}}"
+    />
+    <style id="app-style">
+      .alert-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 50;
+      }
 
-  <!-- Home Section -->
-  <section id="home" class="relative">
-    <div class="h-96 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2019/09/08/19/48/police-4461826_1280.jpg');">
-      <div class="absolute inset-0 bg-black bg-opacity-60"></div>
-      <div class="relative container mx-auto px-4 h-full flex flex-col justify-center items-start">
-        <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Bienvenido a la Estación de Policía</h2>
-        <p class="text-xl text-white mb-6 max-w-2xl">Comprometidos con la seguridad ciudadana y el bienestar de nuestra comunidad. Estamos aquí para servirle 24/7.</p>
-        <div class="flex flex-wrap gap-3">
-          <a href="#contact" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-medium transition">Contactar</a>
-          <a href="#services" class="bg-white hover:bg-gray-100 text-blue-800 px-6 py-3 rounded font-medium transition">Nuestros Servicios</a>
-        </div>
-      </div>
-    </div>
-  </section>
+      .modal-content {
+        max-height: 80vh;
+        overflow-y: auto;
+      }
 
-  <!-- Contact & Address Section -->
-  <section id="contact" class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">Contacto y Dirección</h2>
-      
-      <div class="flex flex-col md:flex-row gap-8">
-        <div class="w-full md:w-1/2 bg-blue-50 p-6 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold text-blue-800 mb-4">Información de Contacto</h3>
-          
-          <div class="mb-6">
-            <h4 class="font-medium text-blue-700 mb-2">Dirección Física:</h4>
-            <p class="flex items-start">
-              <i class="fas fa-map-marker-alt text-red-600 mr-3 mt-1"></i>
-              <span>Av. de la Policía Nacional 123, Ciudad Central, CP 28001</span>
-            </p>
+      .news-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+      }
+
+      .news-content.expanded {
+        max-height: 500px;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Header Section -->
+    <header class="bg-blue-800 text-white shadow-lg">
+      <div
+        class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center"
+      >
+        <div class="flex items-center mb-2 md:mb-0">
+          <div class="mr-3">
+            <i class="fas fa-shield-alt text-3xl text-yellow-400"></i>
           </div>
-          
-          <div class="mb-6">
-            <h4 class="font-medium text-blue-700 mb-2">Teléfonos:</h4>
-            <p class="flex items-start mb-2">
-              <i class="fas fa-phone text-blue-600 mr-3 mt-1"></i>
-              <span>Emergencias: <strong class="text-red-600">123</strong></span>
-            </p>
-            <p class="flex items-start mb-2">
-              <i class="fas fa-phone-alt text-blue-600 mr-3 mt-1"></i>
-              <span>Central: (+34) 91 234 5678</span>
-            </p>
-            <p class="flex items-start">
-              <i class="fas fa-fax text-blue-600 mr-3 mt-1"></i>
-              <span>Fax: (+34) 91 234 5679</span>
-            </p>
-          </div>
-          
-          <div class="mb-6">
-            <h4 class="font-medium text-blue-700 mb-2">Email:</h4>
-            <p class="flex items-start">
-              <i class="fas fa-envelope text-blue-600 mr-3 mt-1"></i>
-              <span>info@policia-nacional.gov.es</span>
-            </p>
-          </div>
-          
           <div>
-            <h4 class="font-medium text-blue-700 mb-2">Horario de Atención:</h4>
-            <p class="flex items-start mb-2">
-              <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
-              <span>Emergencias: <strong>24 horas, 7 días a la semana</strong></span>
-            </p>
-            <p class="flex items-start mb-2">
-              <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
-              <span>Trámites administrativos: Lunes a Viernes, 09:00 - 17:00</span>
-            </p>
-            <p class="flex items-start">
-              <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
-              <span>Sábados: 10:00 - 14:00 (solo trámites urgentes)</span>
-            </p>
+            <h1 class="text-2xl font-bold">Estación de Policía Nacional</h1>
+            <p class="text-sm text-blue-200">Protegemos y Servimos</p>
           </div>
         </div>
-        
-        <div class="w-full md:w-1/2 bg-gray-100 rounded-lg overflow-hidden shadow-md">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.7749001003!2d-3.7037974!3d40.4167754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422997800a3c81%3A0xc436dec1618c2269!2sMadrid%2C%20Spain!5e0!3m2!1sen!2sus!4v1640005723000!5m2!1sen!2sus" 
-            width="100%" 
-            height="450" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy">
+        <div class="flex items-center">
+          <div class="mr-4">
+            <span class="font-semibold">Emergencias:</span>
+            <span class="text-red-300">123</span>
+          </div>
+          <a
+            href="javascript:void(0)"
+            class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded font-bold transition mr-4"
+          >
+            Reportar Emergencia
+          </a>
+          <a
+            id=""
+            href="/login"
+            class="bg-white text-blue-800 hover:bg-gray-100 px-4 py-2 rounded font-medium transition mr-2"
+          >
+            Iniciar Sesión
+          </a>
+          <a
+            href="/register"
+            class="bg-white text-blue-800 hover:bg-gray-100 px-4 py-2 rounded font-medium transition"
+          >
+            Registrarse
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation Bar -->
+      <nav class="bg-blue-900">
+        <div class="container mx-auto px-4">
+          <ul class="flex flex-wrap justify-center md:justify-start text-sm">
+            <li class="py-3 px-4 hover:bg-blue-700 font-medium transition">
+              <a href="#home">Inicio</a>
+            </li>
+            <li class="py-3 px-4 hover:bg-blue-700 font-medium transition">
+              <a href="#contact">Contacto y Dirección</a>
+            </li>
+            <li class="py-3 px-4 hover:bg-blue-700 font-medium transition">
+              <a href="#alerts">Alertas de Emergencia</a>
+            </li>
+            <li class="py-3 px-4 hover:bg-blue-700 font-medium transition">
+              <a href="/most-wanted">Los mas buscados</a>
+            </li>
+            <li class="py-3 px-4 hover:bg-blue-700 font-medium transition">
+              <a href="#news">Noticias y Actualizaciones</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="relative">
+      <div
+        class="h-96 bg-cover bg-center"
+        style="
+          background-image: url('https://cdn.pixabay.com/photo/2019/09/08/19/48/police-4461826_1280.jpg');
+        "
+      >
+        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div
+          class="relative container mx-auto px-4 h-full flex flex-col justify-center items-start"
+        >
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            Bienvenido a la Estación de Policía
+          </h2>
+          <p class="text-xl text-white mb-6 max-w-2xl">
+            Comprometidos con la seguridad ciudadana y el bienestar de nuestra
+            comunidad. Estamos aquí para servirle 24/7.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="#contact"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-medium transition"
+              >Contactar</a
+            >
+            <a
+              href="#services"
+              class="bg-white hover:bg-gray-100 text-blue-800 px-6 py-3 rounded font-medium transition"
+              >Nuestros Servicios</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact & Address Section -->
+    <section id="contact" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">
+          Contacto y Dirección
+        </h2>
+
+        <div class="flex flex-col md:flex-row gap-8">
+          <div class="w-full md:w-1/2 bg-blue-50 p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-blue-800 mb-4">
+              Información de Contacto
+            </h3>
+
+            <div class="mb-6">
+              <h4 class="font-medium text-blue-700 mb-2">Dirección Física:</h4>
+              <p class="flex items-start">
+                <i class="fas fa-map-marker-alt text-red-600 mr-3 mt-1"></i>
+                <span
+                  >Av. de la Policía Nacional 123, Ciudad Central, CP
+                  28001</span
+                >
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="font-medium text-blue-700 mb-2">Teléfonos:</h4>
+              <p class="flex items-start mb-2">
+                <i class="fas fa-phone text-blue-600 mr-3 mt-1"></i>
+                <span
+                  >Emergencias: <strong class="text-red-600">123</strong></span
+                >
+              </p>
+              <p class="flex items-start mb-2">
+                <i class="fas fa-phone-alt text-blue-600 mr-3 mt-1"></i>
+                <span>Central: (+34) 91 234 5678</span>
+              </p>
+              <p class="flex items-start">
+                <i class="fas fa-fax text-blue-600 mr-3 mt-1"></i>
+                <span>Fax: (+34) 91 234 5679</span>
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h4 class="font-medium text-blue-700 mb-2">Email:</h4>
+              <p class="flex items-start">
+                <i class="fas fa-envelope text-blue-600 mr-3 mt-1"></i>
+                <span>info@policia-nacional.gov.es</span>
+              </p>
+            </div>
+
+            <div>
+              <h4 class="font-medium text-blue-700 mb-2">
+                Horario de Atención:
+              </h4>
+              <p class="flex items-start mb-2">
+                <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
+                <span
+                  >Emergencias:
+                  <strong>24 horas, 7 días a la semana</strong></span
+                >
+              </p>
+              <p class="flex items-start mb-2">
+                <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
+                <span
+                  >Trámites administrativos: Lunes a Viernes, 09:00 -
+                  17:00</span
+                >
+              </p>
+              <p class="flex items-start">
+                <i class="fas fa-clock text-blue-600 mr-3 mt-1"></i>
+                <span>Sábados: 10:00 - 14:00 (solo trámites urgentes)</span>
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="w-full md:w-1/2 bg-gray-100 rounded-lg overflow-hidden shadow-md"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3037.7749001003!2d-3.7037974!3d40.4167754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422997800a3c81%3A0xc436dec1618c2269!2sMadrid%2C%20Spain!5e0!3m2!1sen!2sus!4v1640005723000!5m2!1sen!2sus"
+              width="100%"
+              height="450"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            >
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency Alerts Section -->
+    <section id="alerts" class="py-16 bg-gray-100">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">
+          Alertas de Emergencia
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Alert 1 -->
+          <div
+            class="bg-red-50 border-l-4 border-red-600 rounded-lg overflow-hidden shadow-md"
+          >
+            <div class="p-5">
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-red-700">
+                  Alerta de Tráfico
+                </h3>
+                <span class="text-sm bg-red-600 text-white px-2 py-1 rounded"
+                  >Activa</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 mb-3">14 de mayo, 2025 - 09:45</p>
+              <p class="mb-4 text-gray-700">
+                Cierre parcial de la vía principal por accidente de tráfico. Se
+                recomienda buscar rutas alternativas.
+              </p>
+              <button
+                class="view-details bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition"
+                data-alert-id="1"
+              >
+                Ver Detalles
+              </button>
+            </div>
+          </div>
+
+          <!-- Alert 2 -->
+          <div
+            class="bg-red-50 border-l-4 border-red-600 rounded-lg overflow-hidden shadow-md"
+          >
+            <div class="p-5">
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-red-700">
+                  Aviso por Tormentas
+                </h3>
+                <span class="text-sm bg-red-600 text-white px-2 py-1 rounded"
+                  >Activa</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 mb-3">14 de mayo, 2025 - 08:30</p>
+              <p class="mb-4 text-gray-700">
+                Alerta por fuertes tormentas. Se recomienda evitar
+                desplazamientos innecesarios durante las próximas 6 horas.
+              </p>
+              <button
+                class="view-details bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition"
+                data-alert-id="2"
+              >
+                Ver Detalles
+              </button>
+            </div>
+          </div>
+
+          <!-- Alert 3 -->
+          <div
+            class="bg-yellow-50 border-l-4 border-yellow-600 rounded-lg overflow-hidden shadow-md"
+          >
+            <div class="p-5">
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-yellow-700">
+                  Búsqueda de Persona
+                </h3>
+                <span class="text-sm bg-yellow-600 text-white px-2 py-1 rounded"
+                  >En Progreso</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 mb-3">13 de mayo, 2025 - 17:20</p>
+              <p class="mb-4 text-gray-700">
+                Busqueda de persona desaparecida en el área del parque central.
+                Por favor, contacte a la policía si tiene información.
+              </p>
+              <button
+                class="view-details bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded text-sm transition"
+                data-alert-id="3"
+              >
+                Ver Detalles
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Alert Modals -->
+    <div id="alertModal1" class="alert-modal">
+      <div class="modal-container h-full flex items-center justify-center p-4">
+        <div
+          class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full"
+        >
+          <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+              <h3 class="text-2xl font-bold text-red-700">Alerta de Tráfico</h3>
+              <button class="close-modal text-gray-600 hover:text-gray-800">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="mb-4">
+              <span class="bg-red-600 text-white px-2 py-1 rounded text-sm"
+                >Activa</span
+              >
+              <span class="text-sm text-gray-500 ml-3"
+                >14 de mayo, 2025 - 09:45</span
+              >
+            </div>
+
+            <p class="mb-4">
+              Cierre parcial de la vía principal por accidente de tráfico en la
+              intersección de Avenida Principal y Calle Comercio. Se recomienda
+              buscar rutas alternativas.
+            </p>
+
+            <h4 class="font-bold text-lg mb-2">Detalles Adicionales:</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1">
+              <li>
+                Vías afectadas: Avenida Principal (dirección norte) entre las
+                calles Comercio y Libertad
+              </li>
+              <li>Duración estimada: 3 horas aproximadamente</li>
+              <li>
+                Servicios en la zona: Policía de tráfico, ambulancias y bomberos
+              </li>
+            </ul>
+
+            <h4 class="font-bold text-lg mb-2">Rutas Alternativas:</h4>
+            <p>
+              Se recomienda utilizar Calle Marina o Avenida Constitución para
+              desplazamientos en dirección norte.
+            </p>
+
+            <div class="mt-6 pt-4 border-t">
+              <h4 class="font-bold text-lg mb-2">Información de Contacto:</h4>
+              <p>
+                Para más información, contacte con la Unidad de Tráfico: (+34)
+                91 222 3344
+              </p>
+            </div>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
+            <button
+              class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="alertModal2" class="alert-modal">
+      <div class="modal-container h-full flex items-center justify-center p-4">
+        <div
+          class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full"
+        >
+          <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+              <h3 class="text-2xl font-bold text-red-700">
+                Aviso por Tormentas
+              </h3>
+              <button class="close-modal text-gray-600 hover:text-gray-800">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="mb-4">
+              <span class="bg-red-600 text-white px-2 py-1 rounded text-sm"
+                >Activa</span
+              >
+              <span class="text-sm text-gray-500 ml-3"
+                >14 de mayo, 2025 - 08:30</span
+              >
+            </div>
+
+            <p class="mb-4">
+              Alerta por fuertes tormentas eléctricas en toda la región. Se
+              esperan vientos de hasta 80 km/h y posibilidad de granizo. Se
+              recomienda evitar desplazamientos innecesarios durante las
+              próximas 6 horas.
+            </p>
+
+            <h4 class="font-bold text-lg mb-2">Recomendaciones:</h4>
+            <ul class="list-disc list-inside mb-4 space-y-1">
+              <li>Permanezca en interiores y alejado de ventanas</li>
+              <li>Asegure objetos que puedan ser arrastrados por el viento</li>
+              <li>
+                Tenga preparadas linternas y baterías en caso de corte eléctrico
+              </li>
+              <li>Evite conducir si no es absolutamente necesario</li>
+            </ul>
+
+            <h4 class="font-bold text-lg mb-2">Áreas Afectadas:</h4>
+            <p>
+              Todo el municipio, con especial atención a las zonas norte y este.
+            </p>
+
+            <div class="mt-6 pt-4 border-t">
+              <h4 class="font-bold text-lg mb-2">Información de Contacto:</h4>
+              <p>Emergencias: 123</p>
+              <p>Protección Civil: (+34) 91 555 6677</p>
+            </div>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
+            <button
+              class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="alertModal3" class="alert-modal">
+      <div class="modal-container h-full flex items-center justify-center p-4">
+        <div
+          class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full"
+        >
+          <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+              <h3 class="text-2xl font-bold text-yellow-700">
+                Búsqueda de Persona
+              </h3>
+              <button class="close-modal text-gray-600 hover:text-gray-800">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="mb-4">
+              <span class="bg-yellow-600 text-white px-2 py-1 rounded text-sm"
+                >En Progreso</span
+              >
+              <span class="text-sm text-gray-500 ml-3"
+                >13 de mayo, 2025 - 17:20</span
+              >
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+              <div class="md:w-1/3">
+                <div
+                  class="bg-gray-200 h-48 w-full rounded flex items-center justify-center"
+                >
+                  <i class="fas fa-user-circle text-7xl text-gray-400"></i>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h4 class="font-bold text-lg mb-2">
+                  Información de la Persona:
+                </h4>
+                <ul class="space-y-1 mb-4">
+                  <li><strong>Nombre:</strong> Carlos Martínez</li>
+                  <li><strong>Edad:</strong> 72 años</li>
+                  <li><strong>Altura:</strong> 1,70m</li>
+                  <li><strong>Complexión:</strong> Delgada</li>
+                  <li>
+                    <strong>Vestimenta:</strong> Chaqueta azul oscuro, pantalón
+                    gris, zapatillas negras
+                  </li>
+                  <li>
+                    <strong>Características distintivas:</strong> Gafas de
+                    montura negra, usa bastón
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <p class="mb-4">
+              Última vez visto en el Parque Central cerca del quiosco principal
+              alrededor de las 15:30. Puede estar desorientado.
+            </p>
+
+            <h4 class="font-bold text-lg mb-2">Zona de Búsqueda:</h4>
+            <p class="mb-4">
+              Parque Central y alrededores, zona residencial norte.
+            </p>
+
+            <div class="mt-6 pt-4 border-t bg-yellow-50 p-4 rounded">
+              <h4 class="font-bold text-lg mb-2 text-yellow-800">
+                Si tiene información:
+              </h4>
+              <p class="text-yellow-800">
+                Por favor, contacte inmediatamente al teléfono de emergencias
+                123 o a la unidad de búsqueda (+34) 91 234 5690.
+              </p>
+              <p class="text-yellow-800 mt-2">
+                No intente intervenir por su cuenta, simplemente reporte la
+                ubicación.
+              </p>
+            </div>
+          </div>
+          <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
+            <button
+              class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div
+      id="modalLogin"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-white rounded-lg w-11/12 max-w-md p-6 relative">
+        <button
+          class="close-modal absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3 class="text-2xl font-bold mb-4 text-blue-800">Iniciar Sesión</h3>
+        <form id="formLogin" class="space-y-4" action="/login" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input
+            type="text"
+            placeholder="Usuario"
+            name="username"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            name="password"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          {% with messages = get_flashed_messages() %} {% if messages %}
+          <br />
+          {% for message in messages %}
+          <div class="alert alert-primary alert-dimissible" role="alert">
+            <strong> {{ message }} </strong>
+            <button
+              class="btn-close"
+              data-bs-dimiss="alert"
+              aria-label="Close"
+            ></button>
+          </div>
+          {% endfor%} {% endif %} {% endwith%}
+          <button
+            type="submit"
+            class="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            Entrar
+          </button>
+        </form>
+        <p class="mt-4 text-center text-sm">
+          ¿No tienes cuenta?
+          <a
+            href="javascript:void(0)"
+            id="toRegister"
+            class="text-blue-600 hover:underline"
+            >Regístrate</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div
+      id="modalRegister"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-white rounded-lg w-11/12 max-w-md p-6 relative">
+        <button
+          class="close-modal absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <h3 class="text-2xl font-bold mb-4 text-blue-800">Crear Cuenta</h3>
+        <form
+          id="formRegister"
+          class="space-y-4"
+          action="/register"
+          method="post"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <input
+            type="text"
+            name="username"
+            placeholder="Nombre de usuario"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Correo electrónico"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Nombre completo"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Confirmar contraseña"
+            class="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          />
+          <button
+            type="submit"
+            class="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition"
+          >
+            Registrarse
+          </button>
+        </form>
+        <p class="mt-4 text-center text-sm">
+          ¿Ya tienes cuenta?
+          <a
+            href="javascript:void(0)"
+            id="toLogin"
+            class="text-blue-600 hover:underline"
+            >Inicia Sesión</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Interactive Map Section -->
+    <section id="map" class="py-16 bg-white">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">
+          Mapa Interactivo
+        </h2>
+
+        <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
+          <p class="text-gray-700 mb-2">
+            Este mapa muestra la ubicación de nuestra estación principal,
+            subestaciones, y los límites de jurisdicción del distrito policial.
+          </p>
+          <div class="flex flex-wrap gap-4 mb-4">
+            <div class="flex items-center">
+              <span
+                class="inline-block w-4 h-4 bg-blue-600 rounded-full mr-2"
+              ></span>
+              <span class="text-sm">Estación Principal</span>
+            </div>
+            <div class="flex items-center">
+              <span
+                class="inline-block w-4 h-4 bg-green-600 rounded-full mr-2"
+              ></span>
+              <span class="text-sm">Subestaciones</span>
+            </div>
+            <div class="flex items-center">
+              <span
+                class="inline-block w-4 h-4 border-2 border-red-600 rounded-full mr-2"
+              ></span>
+              <span class="text-sm">Límites del Distrito</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg overflow-hidden shadow-lg h-96">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12147.342233522825!2d-3.7175733!3d40.4167755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422997800a3c81%3A0xc436dec1618c2269!2sMadrid%2C%20Spain!5e0!3m2!1sen!2sus!4v1640005723000!5m2!1sen!2sus"
+            width="100%"
+            height="100%"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+          >
           </iframe>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Emergency Alerts Section -->
-  <section id="alerts" class="py-16 bg-gray-100">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">Alertas de Emergencia</h2>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Alert 1 -->
-        <div class="bg-red-50 border-l-4 border-red-600 rounded-lg overflow-hidden shadow-md">
-          <div class="p-5">
-            <div class="flex justify-between items-start">
-              <h3 class="text-xl font-bold text-red-700">Alerta de Tráfico</h3>
-              <span class="text-sm bg-red-600 text-white px-2 py-1 rounded">Activa</span>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">14 de mayo, 2025 - 09:45</p>
-            <p class="mb-4 text-gray-700">Cierre parcial de la vía principal por accidente de tráfico. Se recomienda buscar rutas alternativas.</p>
-            <button class="view-details bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition" data-alert-id="1">
-              Ver Detalles
-            </button>
-          </div>
-        </div>
-        
-        <!-- Alert 2 -->
-        <div class="bg-red-50 border-l-4 border-red-600 rounded-lg overflow-hidden shadow-md">
-          <div class="p-5">
-            <div class="flex justify-between items-start">
-              <h3 class="text-xl font-bold text-red-700">Aviso por Tormentas</h3>
-              <span class="text-sm bg-red-600 text-white px-2 py-1 rounded">Activa</span>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">14 de mayo, 2025 - 08:30</p>
-            <p class="mb-4 text-gray-700">Alerta por fuertes tormentas. Se recomienda evitar desplazamientos innecesarios durante las próximas 6 horas.</p>
-            <button class="view-details bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition" data-alert-id="2">
-              Ver Detalles
-            </button>
-          </div>
-        </div>
-        
-        <!-- Alert 3 -->
-        <div class="bg-yellow-50 border-l-4 border-yellow-600 rounded-lg overflow-hidden shadow-md">
-          <div class="p-5">
-            <div class="flex justify-between items-start">
-              <h3 class="text-xl font-bold text-yellow-700">Búsqueda de Persona</h3>
-              <span class="text-sm bg-yellow-600 text-white px-2 py-1 rounded">En Progreso</span>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">13 de mayo, 2025 - 17:20</p>
-            <p class="mb-4 text-gray-700">Busqueda de persona desaparecida en el área del parque central. Por favor, contacte a la policía si tiene información.</p>
-            <button class="view-details bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded text-sm transition" data-alert-id="3">
-              Ver Detalles
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- News & Updates Section -->
+    <section id="news" class="py-16 bg-gray-100">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">
+          Noticias y Actualizaciones
+        </h2>
 
-  <!-- Alert Modals -->
-  <div id="alertModal1" class="alert-modal">
-    <div class="modal-container h-full flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full">
-        <div class="p-6 border-b">
-          <div class="flex justify-between items-center">
-            <h3 class="text-2xl font-bold text-red-700">Alerta de Tráfico</h3>
-            <button class="close-modal text-gray-600 hover:text-gray-800">
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="mb-4">
-            <span class="bg-red-600 text-white px-2 py-1 rounded text-sm">Activa</span>
-            <span class="text-sm text-gray-500 ml-3">14 de mayo, 2025 - 09:45</span>
-          </div>
-          
-          <p class="mb-4">Cierre parcial de la vía principal por accidente de tráfico en la intersección de Avenida Principal y Calle Comercio. Se recomienda buscar rutas alternativas.</p>
-          
-          <h4 class="font-bold text-lg mb-2">Detalles Adicionales:</h4>
-          <ul class="list-disc list-inside mb-4 space-y-1">
-            <li>Vías afectadas: Avenida Principal (dirección norte) entre las calles Comercio y Libertad</li>
-            <li>Duración estimada: 3 horas aproximadamente</li>
-            <li>Servicios en la zona: Policía de tráfico, ambulancias y bomberos</li>
-          </ul>
-          
-          <h4 class="font-bold text-lg mb-2">Rutas Alternativas:</h4>
-          <p>Se recomienda utilizar Calle Marina o Avenida Constitución para desplazamientos en dirección norte.</p>
-          
-          <div class="mt-6 pt-4 border-t">
-            <h4 class="font-bold text-lg mb-2">Información de Contacto:</h4>
-            <p>Para más información, contacte con la Unidad de Tráfico: (+34) 91 222 3344</p>
-          </div>
-        </div>
-        <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
-          <button class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition">
-            Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="alertModal2" class="alert-modal">
-    <div class="modal-container h-full flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full">
-        <div class="p-6 border-b">
-          <div class="flex justify-between items-center">
-            <h3 class="text-2xl font-bold text-red-700">Aviso por Tormentas</h3>
-            <button class="close-modal text-gray-600 hover:text-gray-800">
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="mb-4">
-            <span class="bg-red-600 text-white px-2 py-1 rounded text-sm">Activa</span>
-            <span class="text-sm text-gray-500 ml-3">14 de mayo, 2025 - 08:30</span>
-          </div>
-          
-          <p class="mb-4">Alerta por fuertes tormentas eléctricas en toda la región. Se esperan vientos de hasta 80 km/h y posibilidad de granizo. Se recomienda evitar desplazamientos innecesarios durante las próximas 6 horas.</p>
-          
-          <h4 class="font-bold text-lg mb-2">Recomendaciones:</h4>
-          <ul class="list-disc list-inside mb-4 space-y-1">
-            <li>Permanezca en interiores y alejado de ventanas</li>
-            <li>Asegure objetos que puedan ser arrastrados por el viento</li>
-            <li>Tenga preparadas linternas y baterías en caso de corte eléctrico</li>
-            <li>Evite conducir si no es absolutamente necesario</li>
-          </ul>
-          
-          <h4 class="font-bold text-lg mb-2">Áreas Afectadas:</h4>
-          <p>Todo el municipio, con especial atención a las zonas norte y este.</p>
-          
-          <div class="mt-6 pt-4 border-t">
-            <h4 class="font-bold text-lg mb-2">Información de Contacto:</h4>
-            <p>Emergencias: 123</p>
-            <p>Protección Civil: (+34) 91 555 6677</p>
-          </div>
-        </div>
-        <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
-          <button class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition">
-            Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="alertModal3" class="alert-modal">
-    <div class="modal-container h-full flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-lg shadow-xl max-w-2xl w-full">
-        <div class="p-6 border-b">
-          <div class="flex justify-between items-center">
-            <h3 class="text-2xl font-bold text-yellow-700">Búsqueda de Persona</h3>
-            <button class="close-modal text-gray-600 hover:text-gray-800">
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-        </div>
-        <div class="p-6">
-          <div class="mb-4">
-            <span class="bg-yellow-600 text-white px-2 py-1 rounded text-sm">En Progreso</span>
-            <span class="text-sm text-gray-500 ml-3">13 de mayo, 2025 - 17:20</span>
-          </div>
-          
-          <div class="flex flex-col md:flex-row gap-4 mb-6">
-            <div class="md:w-1/3">
-              <div class="bg-gray-200 h-48 w-full rounded flex items-center justify-center">
-                <i class="fas fa-user-circle text-7xl text-gray-400"></i>
+        <div class="space-y-6">
+          <!-- News Item 1 -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+              <span class="text-sm text-gray-500 block mb-2"
+                >15 de mayo, 2025</span
+              >
+              <h3 class="text-xl font-bold text-blue-800 mb-3">
+                Nueva Iniciativa de Seguridad Vecinal
+              </h3>
+              <p class="text-gray-700 mb-4">
+                La Estación de Policía Nacional lanza un nuevo programa de
+                vigilancia comunitaria para fortalecer la colaboración entre los
+                ciudadanos y las fuerzas del orden.
+              </p>
+              <button
+                class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center"
+                data-news-id="1"
+              >
+                Leer Más
+                <i
+                  class="fas fa-chevron-down ml-2 text-sm transition-transform"
+                ></i>
+              </button>
+              <div class="news-content mt-4 border-t pt-4" id="news-content-1">
+                <p class="mb-4">
+                  La iniciativa "Vecinos Vigilantes" busca crear una red de
+                  colaboración ciudadana para mejorar la seguridad en los
+                  barrios. El programa incluye capacitación para representantes
+                  vecinales, canales de comunicación directa con oficiales
+                  asignados a cada zona, y un sistema de alerta temprana para
+                  situaciones sospechosas.
+                </p>
+                <p class="mb-4">
+                  "Nuestro objetivo es fortalecer el tejido comunitario y crear
+                  un ambiente de confianza entre la policía y los residentes,"
+                  explicó el Comisario Jefe Antonio Ramírez durante la
+                  presentación del programa.
+                </p>
+                <p>
+                  Las inscripciones para participar como coordinador vecinal ya
+                  están abiertas. Los interesados pueden acudir a cualquier
+                  comisaría o registrarse a través de la página web oficial.
+                </p>
               </div>
             </div>
-            <div class="md:w-2/3">
-              <h4 class="font-bold text-lg mb-2">Información de la Persona:</h4>
-              <ul class="space-y-1 mb-4">
-                <li><strong>Nombre:</strong> Carlos Martínez</li>
-                <li><strong>Edad:</strong> 72 años</li>
-                <li><strong>Altura:</strong> 1,70m</li>
-                <li><strong>Complexión:</strong> Delgada</li>
-                <li><strong>Vestimenta:</strong> Chaqueta azul oscuro, pantalón gris, zapatillas negras</li>
-                <li><strong>Características distintivas:</strong> Gafas de montura negra, usa bastón</li>
-              </ul>
+          </div>
+
+          <!-- News Item 2 -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+              <span class="text-sm text-gray-500 block mb-2"
+                >12 de mayo, 2025</span
+              >
+              <h3 class="text-xl font-bold text-blue-800 mb-3">
+                Resultados de la Campaña de Seguridad Vial
+              </h3>
+              <p class="text-gray-700 mb-4">
+                Concluye la campaña especial de control de velocidad y alcohol
+                al volante con resultados positivos y una reducción notable en
+                los accidentes de tráfico.
+              </p>
+              <button
+                class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center"
+                data-news-id="2"
+              >
+                Leer Más
+                <i
+                  class="fas fa-chevron-down ml-2 text-sm transition-transform"
+                ></i>
+              </button>
+              <div class="news-content mt-4 border-t pt-4" id="news-content-2">
+                <p class="mb-4">
+                  Durante las dos semanas que duró la campaña, se establecieron
+                  45 puntos de control en las principales vías urbanas e
+                  interurbanas. Se realizaron más de 3,000 pruebas de
+                  alcoholemia y se controlaron las velocidades de más de 10,000
+                  vehículos.
+                </p>
+                <p class="mb-4">
+                  Los datos revelan una reducción del 30% en los accidentes de
+                  tráfico respecto al mismo período del año anterior, y un
+                  descenso del 25% en las infracciones por exceso de velocidad.
+                </p>
+                <p>
+                  "Estos resultados demuestran que la prevención y la
+                  concienciación son fundamentales para mejorar la seguridad en
+                  nuestras carreteras," declaró la Teniente Coronel María
+                  Sánchez, responsable de la Unidad de Tráfico.
+                </p>
+              </div>
             </div>
           </div>
-          
-          <p class="mb-4">Última vez visto en el Parque Central cerca del quiosco principal alrededor de las 15:30. Puede estar desorientado.</p>
-          
-          <h4 class="font-bold text-lg mb-2">Zona de Búsqueda:</h4>
-          <p class="mb-4">Parque Central y alrededores, zona residencial norte.</p>
-          
-          <div class="mt-6 pt-4 border-t bg-yellow-50 p-4 rounded">
-            <h4 class="font-bold text-lg mb-2 text-yellow-800">Si tiene información:</h4>
-            <p class="text-yellow-800">Por favor, contacte inmediatamente al teléfono de emergencias 123 o a la unidad de búsqueda (+34) 91 234 5690.</p>
-            <p class="text-yellow-800 mt-2">No intente intervenir por su cuenta, simplemente reporte la ubicación.</p>
-          </div>
-        </div>
-        <div class="p-4 bg-gray-50 rounded-b-lg flex justify-end">
-          <button class="close-modal bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition">
-            Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- LOGIN MODAL -->
-  <div id="modalLogin" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg w-11/12 max-w-md p-6 relative">
-      <button class="close-modal absolute top-3 right-3 text-gray-600 hover:text-gray-800">
-        <i class="fas fa-times"></i>
-      </button>
-      <h3 class="text-2xl font-bold mb-4 text-blue-800">Iniciar Sesión</h3>
-      <form id="formLogin" class="space-y-4" action="/login" method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="text" placeholder="Usuario" name="username" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <input type="password" placeholder="Contraseña" name="password" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <br>
-          {% for message in messages %}
-          <div class="alert alert-primary alert-dimissible" role="alert">
-            <strong>
-              {{ message }}
-            </strong>
-            <button class="btn-close" data-bs-dimiss="alert" aria-label="Close"></button>
-          </div>
-        {% endfor%}
-        {% endif %}
-        {% endwith%}
-        <button type="submit" class="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition">Entrar</button>
-      </form>
-      <p class="mt-4 text-center text-sm">
-        ¿No tienes cuenta?
-        <a href="javascript:void(0)" id="toRegister" class="text-blue-600 hover:underline">Regístrate</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- REGISTER MODAL -->
-  <div id="modalRegister" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-lg w-11/12 max-w-md p-6 relative">
-      <button class="close-modal absolute top-3 right-3 text-gray-600 hover:text-gray-800">
-        <i class="fas fa-times"></i>
-      </button>
-      <h3 class="text-2xl font-bold mb-4 text-blue-800">Crear Cuenta</h3>
-      <form id="formRegister" class="space-y-4" action="/register" method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="text" name="username" placeholder="Nombre de usuario" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <input type="email" name="email" placeholder="Correo electrónico" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <input type="text" name="fullname" placeholder="Nombre completo" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <input type="password" name="password" placeholder="Contraseña" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <input type="password" placeholder="Confirmar contraseña" class="w-full border border-gray-300 rounded px-3 py-2" required>
-        <button type="submit" class="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition">Registrarse</button>
-      </form>
-      <p class="mt-4 text-center text-sm">
-        ¿Ya tienes cuenta?
-        <a href="javascript:void(0)" id="toLogin" class="text-blue-600 hover:underline">Inicia Sesión</a>
-      </p>
-    </div>
-  </div>
-
-  <!-- Interactive Map Section -->
-  <section id="map" class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">Mapa Interactivo</h2>
-      
-      <div class="bg-gray-100 p-4 rounded-lg shadow-md mb-6">
-        <p class="text-gray-700 mb-2">Este mapa muestra la ubicación de nuestra estación principal, subestaciones, y los límites de jurisdicción del distrito policial.</p>
-        <div class="flex flex-wrap gap-4 mb-4">
-          <div class="flex items-center">
-            <span class="inline-block w-4 h-4 bg-blue-600 rounded-full mr-2"></span>
-            <span class="text-sm">Estación Principal</span>
-          </div>
-          <div class="flex items-center">
-            <span class="inline-block w-4 h-4 bg-green-600 rounded-full mr-2"></span>
-            <span class="text-sm">Subestaciones</span>
-          </div>
-          <div class="flex items-center">
-            <span class="inline-block w-4 h-4 border-2 border-red-600 rounded-full mr-2"></span>
-            <span class="text-sm">Límites del Distrito</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="rounded-lg overflow-hidden shadow-lg h-96">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12147.342233522825!2d-3.7175733!3d40.4167755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422997800a3c81%3A0xc436dec1618c2269!2sMadrid%2C%20Spain!5e0!3m2!1sen!2sus!4v1640005723000!5m2!1sen!2sus" 
-          width="100%" 
-          height="100%" 
-          style="border:0;" 
-          allowfullscreen="" 
-          loading="lazy">
-        </iframe>
-      </div>
-    </div>
-  </section>
-
-  <!-- News & Updates Section -->
-  <section id="news" class="py-16 bg-gray-100">
-    <div class="container mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-blue-800 mb-12">Noticias y Actualizaciones</h2>
-      
-      <div class="space-y-6">
-        <!-- News Item 1 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="p-6">
-            <span class="text-sm text-gray-500 block mb-2">15 de mayo, 2025</span>
-            <h3 class="text-xl font-bold text-blue-800 mb-3">Nueva Iniciativa de Seguridad Vecinal</h3>
-            <p class="text-gray-700 mb-4">La Estación de Policía Nacional lanza un nuevo programa de vigilancia comunitaria para fortalecer la colaboración entre los ciudadanos y las fuerzas del orden.</p>
-            <button class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center" data-news-id="1">
-              Leer Más <i class="fas fa-chevron-down ml-2 text-sm transition-transform"></i>
-            </button>
-            <div class="news-content mt-4 border-t pt-4" id="news-content-1">
-              <p class="mb-4">La iniciativa "Vecinos Vigilantes" busca crear una red de colaboración ciudadana para mejorar la seguridad en los barrios. El programa incluye capacitación para representantes vecinales, canales de comunicación directa con oficiales asignados a cada zona, y un sistema de alerta temprana para situaciones sospechosas.</p>
-              <p class="mb-4">"Nuestro objetivo es fortalecer el tejido comunitario y crear un ambiente de confianza entre la policía y los residentes," explicó el Comisario Jefe Antonio Ramírez durante la presentación del programa.</p>
-              <p>Las inscripciones para participar como coordinador vecinal ya están abiertas. Los interesados pueden acudir a cualquier comisaría o registrarse a través de la página web oficial.</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- News Item 2 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="p-6">
-            <span class="text-sm text-gray-500 block mb-2">12 de mayo, 2025</span>
-            <h3 class="text-xl font-bold text-blue-800 mb-3">Resultados de la Campaña de Seguridad Vial</h3>
-            <p class="text-gray-700 mb-4">Concluye la campaña especial de control de velocidad y alcohol al volante con resultados positivos y una reducción notable en los accidentes de tráfico.</p>
-            <button class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center" data-news-id="2">
-              Leer Más <i class="fas fa-chevron-down ml-2 text-sm transition-transform"></i>
-            </button>
-            <div class="news-content mt-4 border-t pt-4" id="news-content-2">
-              <p class="mb-4">Durante las dos semanas que duró la campaña, se establecieron 45 puntos de control en las principales vías urbanas e interurbanas. Se realizaron más de 3,000 pruebas de alcoholemia y se controlaron las velocidades de más de 10,000 vehículos.</p>
-              <p class="mb-4">Los datos revelan una reducción del 30% en los accidentes de tráfico respecto al mismo período del año anterior, y un descenso del 25% en las infracciones por exceso de velocidad.</p>
-              <p>"Estos resultados demuestran que la prevención y la concienciación son fundamentales para mejorar la seguridad en nuestras carreteras," declaró la Teniente Coronel María Sánchez, responsable de la Unidad de Tráfico.</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- News Item 3 -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="p-6">
-            <span class="text-sm text-gray-500 block mb-2">5 de mayo, 2025</span>
-            <h3 class="text-xl font-bold text-blue-800 mb-3">Jornada de Puertas Abiertas</h3>
-            <p class="text-gray-700 mb-4">Este sábado 17 de mayo se celebrará una jornada de puertas abiertas en la Estación Principal, con actividades para todas las edades y demostraciones de nuestras unidades especializadas.</p>
-            <button class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center" data-news-id="3">
-              Leer Más <i class="fas fa-chevron-down ml-2 text-sm transition-transform"></i>
-            </button>
-            <div class="news-content mt-4 border-t pt-4" id="news-content-3">
-              <p class="mb-4">La jornada de puertas abiertas tendrá lugar de 10:00 a 18:00 horas y ofrecerá a los ciudadanos la oportunidad de conocer de cerca el trabajo diario de los agentes de policía y los recursos con los que cuentan.</p>
-              <p class="mb-4">Entre las actividades programadas destacan:</p>
-              <ul class="list-disc list-inside mb-4 ml-2 space-y-1">
-                <li>Exhibición de la Unidad Canina</li>
-                <li>Demostración de técnicas de defensa personal</li>
-                <li>Exposición de vehículos policiales</li>
-                <li>Talleres de prevención para niños y jóvenes</li>
-                <li>Charlas sobre seguridad ciudadana</li>
-              </ul>
-              <p>La entrada es gratuita y no requiere inscripción previa. Se recomienda acudir en transporte público debido a las limitaciones de aparcamiento en la zona.</p>
+          <!-- News Item 3 -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+              <span class="text-sm text-gray-500 block mb-2"
+                >5 de mayo, 2025</span
+              >
+              <h3 class="text-xl font-bold text-blue-800 mb-3">
+                Jornada de Puertas Abiertas
+              </h3>
+              <p class="text-gray-700 mb-4">
+                Este sábado 17 de mayo se celebrará una jornada de puertas
+                abiertas en la Estación Principal, con actividades para todas
+                las edades y demostraciones de nuestras unidades especializadas.
+              </p>
+              <button
+                class="read-more text-blue-600 hover:text-blue-800 font-medium transition flex items-center"
+                data-news-id="3"
+              >
+                Leer Más
+                <i
+                  class="fas fa-chevron-down ml-2 text-sm transition-transform"
+                ></i>
+              </button>
+              <div class="news-content mt-4 border-t pt-4" id="news-content-3">
+                <p class="mb-4">
+                  La jornada de puertas abiertas tendrá lugar de 10:00 a 18:00
+                  horas y ofrecerá a los ciudadanos la oportunidad de conocer de
+                  cerca el trabajo diario de los agentes de policía y los
+                  recursos con los que cuentan.
+                </p>
+                <p class="mb-4">Entre las actividades programadas destacan:</p>
+                <ul class="list-disc list-inside mb-4 ml-2 space-y-1">
+                  <li>Exhibición de la Unidad Canina</li>
+                  <li>Demostración de técnicas de defensa personal</li>
+                  <li>Exposición de vehículos policiales</li>
+                  <li>Talleres de prevención para niños y jóvenes</li>
+                  <li>Charlas sobre seguridad ciudadana</li>
+                </ul>
+                <p>
+                  La entrada es gratuita y no requiere inscripción previa. Se
+                  recomienda acudir en transporte público debido a las
+                  limitaciones de aparcamiento en la zona.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="bg-blue-900 text-white pt-12 pb-6">
-    <div class="container mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-        <!-- Quick Links -->
-        <div>
-          <h4 class="text-lg font-bold mb-4 text-blue-200">Enlaces Rápidos</h4>
-          <ul class="space-y-2">
-            <li><a href="#home" class="hover:text-blue-300 transition">Inicio</a></li>
-            <li><a href="#contact" class="hover:text-blue-300 transition">Contacto</a></li>
-            <li><a href="#alerts" class="hover:text-blue-300 transition">Alertas</a></li>
-            <li><a href="#map" class="hover:text-blue-300 transition">Mapa</a></li>
-            <li><a href="#news" class="hover:text-blue-300 transition">Noticias</a></li>
-          </ul>
-        </div>
-        
-        <!-- Services -->
-        <div>
-          <h4 class="text-lg font-bold mb-4 text-blue-200">Servicios</h4>
-          <ul class="space-y-2">
-            <li><a href="javascript:void(0)" class="hover:text-blue-300 transition">Denuncias Online</a></li>
-            <li><a href="javascript:void(0)" class="hover:text-blue-300 transition">Trámites Administrativos</a></li>
-            <li><a href="javascript:void(0)" class="hover:text-blue-300 transition">Seguridad Ciudadana</a></li>
-            <li><a href="javascript:void(0)" class="hover:text-blue-300 transition">Atención al Ciudadano</a></li>
-            <li><a href="javascript:void(0)" class="hover:text-blue-300 transition">Objetos Perdidos</a></li>
-          </ul>
-        </div>
-        
-        <!-- Emergency Numbers -->
-        <div>
-          <h4 class="text-lg font-bold mb-4 text-blue-200">Teléfonos de Emergencia</h4>
-          <ul class="space-y-2">
-            <li>Emergencias: <strong>123</strong></li>
-            <li>Policía: <strong>091</strong></li>
-            <li>Bomberos: <strong>080</strong></li>
-            <li>Ambulancias: <strong>061</strong></li>
-            <li>Protección Civil: <strong>112</strong></li>
-          </ul>
-        </div>
-        
-        <!-- Connect -->
-        <div>
-          <h4 class="text-lg font-bold mb-4 text-blue-200">Síguenos</h4>
-          <div class="flex space-x-4 mb-4">
-            <a href="javascript:void(0)" class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="javascript:void(0)" class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="javascript:void(0)" class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="javascript:void(0)" class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition">
-              <i class="fab fa-youtube"></i>
-            </a>
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white pt-12 pb-6">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <!-- Quick Links -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 text-blue-200">
+              Enlaces Rápidos
+            </h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#home" class="hover:text-blue-300 transition"
+                  >Inicio</a
+                >
+              </li>
+              <li>
+                <a href="#contact" class="hover:text-blue-300 transition"
+                  >Contacto</a
+                >
+              </li>
+              <li>
+                <a href="#alerts" class="hover:text-blue-300 transition"
+                  >Alertas</a
+                >
+              </li>
+              <li>
+                <a href="#map" class="hover:text-blue-300 transition">Mapa</a>
+              </li>
+              <li>
+                <a href="#news" class="hover:text-blue-300 transition"
+                  >Noticias</a
+                >
+              </li>
+            </ul>
           </div>
-          <p class="text-sm">Suscríbete a nuestro boletín informativo para estar al día de todas las novedades.</p>
+
+          <!-- Services -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 text-blue-200">Servicios</h4>
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-blue-300 transition"
+                  >Denuncias Online</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-blue-300 transition"
+                  >Trámites Administrativos</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-blue-300 transition"
+                  >Seguridad Ciudadana</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-blue-300 transition"
+                  >Atención al Ciudadano</a
+                >
+              </li>
+              <li>
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-blue-300 transition"
+                  >Objetos Perdidos</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Emergency Numbers -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 text-blue-200">
+              Teléfonos de Emergencia
+            </h4>
+            <ul class="space-y-2">
+              <li>Emergencias: <strong>123</strong></li>
+              <li>Policía: <strong>091</strong></li>
+              <li>Bomberos: <strong>080</strong></li>
+              <li>Ambulancias: <strong>061</strong></li>
+              <li>Protección Civil: <strong>112</strong></li>
+            </ul>
+          </div>
+
+          <!-- Connect -->
+          <div>
+            <h4 class="text-lg font-bold mb-4 text-blue-200">Síguenos</h4>
+            <div class="flex space-x-4 mb-4">
+              <a
+                href="javascript:void(0)"
+                class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition"
+              >
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition"
+              >
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition"
+              >
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a
+                href="javascript:void(0)"
+                class="bg-blue-800 hover:bg-blue-700 h-10 w-10 rounded-full flex items-center justify-center transition"
+              >
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+            <p class="text-sm">
+              Suscríbete a nuestro boletín informativo para estar al día de
+              todas las novedades.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-8 mt-8 border-t border-blue-800 text-sm text-blue-300">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <p>
+              &copy; 2025 Estación de Policía Nacional. Todos los derechos
+              reservados.
+            </p>
+            <div class="flex mt-4 md:mt-0 space-x-4">
+              <a href="javascript:void(0)" class="hover:text-white transition"
+                >Política de Privacidad</a
+              >
+              <a href="javascript:void(0)" class="hover:text-white transition"
+                >Términos de Uso</a
+              >
+              <a href="javascript:void(0)" class="hover:text-white transition"
+                >Accesibilidad</a
+              >
+            </div>
+          </div>
         </div>
       </div>
-      
-      <div class="pt-8 mt-8 border-t border-blue-800 text-sm text-blue-300">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; 2025 Estación de Policía Nacional. Todos los derechos reservados.</p>
-          <div class="flex mt-4 md:mt-0 space-x-4">
-            <a href="javascript:void(0)" class="hover:text-white transition">Política de Privacidad</a>
-            <a href="javascript:void(0)" class="hover:text-white transition">Términos de Uso</a>
-            <a href="javascript:void(0)" class="hover:text-white transition">Accesibilidad</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
-  <script id="app-script">
-    document.addEventListener('DOMContentLoaded', function() {
-      // Alert Modal Functionality
-      const viewDetailsButtons = document.querySelectorAll('.view-details');
-      const closeModalButtons = document.querySelectorAll('.close-modal');
-      
-      viewDetailsButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const alertId = this.getAttribute('data-alert-id');
-          const modal = document.getElementById(`alertModal${alertId}`);
-          modal.style.display = 'block';
-          document.body.style.overflow = 'hidden';
-        });
-      });
-      
-      closeModalButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const modal = this.closest('.alert-modal');
-          modal.style.display = 'none';
-          document.body.style.overflow = 'auto';
-        });
-      });
-      
-      // Close modal when clicking outside of content
-      const modals = document.querySelectorAll('.alert-modal');
-      modals.forEach(modal => {
-        modal.addEventListener('click', function(e) {
-          if (e.target === this) {
-            this.style.display = 'none';
-            document.body.style.overflow = 'auto';
-          }
-        });
-      });
-      
-      // News Read More functionality
-      const readMoreButtons = document.querySelectorAll('.read-more');
-      
-      readMoreButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const newsId = this.getAttribute('data-news-id');
-          const content = document.getElementById(`news-content-${newsId}`);
-          const icon = this.querySelector('i');
-          
-          content.classList.toggle('expanded');
-          
-          if (content.classList.contains('expanded')) {
-            this.querySelector('i').style.transform = 'rotate(180deg)';
-            this.textContent = 'Leer Menos ';
-            this.appendChild(icon);
-          } else {
-            this.querySelector('i').style.transform = 'rotate(0)';
-            this.textContent = 'Leer Más ';
-            this.appendChild(icon);
-          }
-        });
-      });
-      
-      // Smooth scrolling for anchor links
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-          e.preventDefault();
-          const targetId = this.getAttribute('href');
-          const targetElement = document.querySelector(targetId);
-          
-          if (targetElement) {
-            window.scrollTo({
-              top: targetElement.offsetTop - 100,
-              behavior: 'smooth'
-            });
-          }
-        });
-      });
-      
-      // Login/Register Modal Logic
-      const modalLogin    = document.getElementById('modalLogin');
-      const modalRegister = document.getElementById('modalRegister');
-      const btnLogin      = document.getElementById('btnLogin');
-      const btnRegister   = document.getElementById('btnRegister');
-      const toRegister    = document.getElementById('toRegister');
-      const toLogin       = document.getElementById('toLogin');
-      const closeButtons  = document.querySelectorAll('.close-modal');
-
-      function openModal(modal) {
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-      }
-      function closeModal(modal) {
-        modal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-      }
-
-      btnLogin.addEventListener('click', () => openModal(modalLogin));
-      btnRegister.addEventListener('click', () => openModal(modalRegister));
-
-      toRegister.addEventListener('click', () => {
-        closeModal(modalLogin);
-        openModal(modalRegister);
-      });
-      toLogin.addEventListener('click', () => {
-        closeModal(modalRegister);
-        openModal(modalLogin);
-      });
-
-      closeButtons.forEach(btn =>
-        btn.addEventListener('click', e => {
-          const parentModal = e.target.closest('.fixed');
-          closeModal(parentModal);
-        })
-      );
-
-      // Prevent clicks inside modal content from closing
-      [modalLogin, modalRegister].forEach(modal => {
-        modal.addEventListener('click', e => {
-          if (e.target === modal) closeModal(modal);
-        });
-      });
-
-      // Optional: handle form submissions here
-    });
-  </script>
-</body>
+    <script
+      id="app-script"
+      src="{{ url_for('static', filename='js/home.js')}}"
+    ></script>
+  </body>
 </html>

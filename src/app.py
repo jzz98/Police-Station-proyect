@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
+from  werkzeug.routing import BuildError
 
 # Apis
 from apis.info.api_info import ApiReclusos
@@ -30,17 +31,35 @@ class Server:
         self.csrf = CSRFProtect(self.app)
 
         self.login_manager_app = LoginManager(self.app)
-        self.login_manager_app.login_view = 'login'  # Redirige si no está logueado
+        self.login_manager_app.login_view = 'MainRoutes.login'  # Redirige si no está logueado
 
         self.configure_login()
         # self.routes()
+        self.Error_handler()
         self.register_blueprints()
-    
+        self.login_manager_app.unauthorized_handler(self.custom_unauthorized)
 
+    def custom_unauthorized(self):
+        return redirect(url_for('MainRoutes.login'))
+    
     def configure_login(self):
         @self.login_manager_app.user_loader
         def load_user(id):
             return ModelUser.get_by_id(self.db, id)
+        
+        @self.login_manager_app.unauthorized_handler
+        def unauthorized():
+            return redirect(url_for('MainRoutes.login'))
+        
+    def Error_handler(self):
+        @self.app.errorhandler(404)
+        def page_not_found(e):
+            return redirect(url_for('MainRoutes.login'))
+        
+        @self.app.errorhandler(403)
+        def page_not_found(e):
+            return redirect(url_for('MainRoutes.login'))
+
 
     def register_blueprints(self):
         reclusos_api = ApiReclusos(self.db)

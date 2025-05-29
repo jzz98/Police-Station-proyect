@@ -123,7 +123,7 @@
                   <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i class="mdi mdi-account-box text-gray-500 dark:text-gray-400"></i>
                   </div>
-                  <input id="alias" name="Alias" type="text"
+                  <input id="alias" name="ALias" type="text"
                     class="block w-full pl-10 py-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:text-white transition-colors"
                     placeholder="Alias or nickname">
                 </div>
@@ -193,9 +193,9 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="facility">
                   Correctional Facility <span class="text-red-500">*</span>
                 </label>
-                <select id="facility" name="Nombre_carcel" required
+                <select id="facility" name="INT_Carcel" required
                   class="block w-full py-2 pl-3 pr-10 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:text-white transition-colors">
-                  <option value="">Select a facility</option>
+                  <option value="0">Select a facility</option>
                   <option value="1">Federal Penitentiary</option>
                   <option value="2">State Correctional Facility</option>
                   <option value="3">County Jail</option>
@@ -214,7 +214,7 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <i class="mdi mdi-numeric text-gray-500 dark:text-gray-400"></i>
                     </div>
-                    <input id="conviction-count" name="Cantidad_condenas" type="number" min="1" required
+                    <input id="conviction-count" name="Numero_condenas" type="number" min="1" required
                       class="block w-full pl-10 py-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:text-white transition-colors"
                       placeholder="Enter number">
                   </div>
@@ -229,7 +229,7 @@
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <i class="mdi mdi-account-tie text-gray-500 dark:text-gray-400"></i>
                     </div>
-                    <input id="officer" name="Oficial_responsable" type="text" required
+                    <input id="officer" name="Oficial_encargado"  type="text" required
                       class="block w-full pl-10 py-2 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:text-white transition-colors"
                       placeholder="Officer full name">
                   </div>
@@ -241,7 +241,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" for="notes">
                   Convictions
                 </label>
-                <textarea id="notes" name="Condenas" rows="4"
+                <textarea id="notes" rows="4"
                   class="block w-full py-2 px-3 text-base bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 dark:focus:border-indigo-400 dark:text-white transition-colors"
                   placeholder="Enter any additional information or special requirements"></textarea>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Include any relevant details not covered by other fields</p>
@@ -256,21 +256,21 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Inmate Status</label>
               <div class="flex flex-wrap gap-6">
                 <div class="flex items-center">
-                  <input id="status-active" name="Activo" type="radio" value="Active" checked
+                  <input id="status-active" name="Estado" type="radio" value="Active" checked
                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600">
                   <label for="status-active" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                     Active
                   </label>
                 </div>
                 <div class="flex items-center">
-                  <input id="status-pending" name="Activo" type="radio" value="pending"
+                  <input id="status-pending" name="Estado" type="radio" value="pending"
                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600">
                   <label for="status-pending" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                     Pending Transfer
                   </label>
                 </div>
                 <div class="flex items-center">
-                  <input id="status-inactive" name="Activo" type="radio" value="inactive"
+                  <input id="status-inactive" name="Estado" type="radio" value="inactive"
                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600">
                   <label for="status-inactive" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                     Inactive
@@ -283,7 +283,7 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Special Monitoring Required</label>
               <div class="flex items-start">
                 <div class="flex items-center h-5">
-                  <input id="monitoring" name="monitoreo" type="checkbox"
+                  <input id="monitoring" type="checkbox" name="Monitoreo" value="Y"
                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 rounded">
                 </div>
                 <div class="ml-3 text-sm">

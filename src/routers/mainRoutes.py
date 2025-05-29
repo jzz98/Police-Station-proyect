@@ -73,6 +73,9 @@ class MainRoutes:
             # else:
             #     return valid  # respuesta de error desde validate_token
         
+        @self.MainRoutes.route('/most-wanted')
+        def most_wanted():
+            return render_template('common/mostwanted.html')
                 
         @self.MainRoutes.route('/logout')
         def logout():

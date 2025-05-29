@@ -100,7 +100,7 @@
               </h3>
               <h1>
       
-                {% set activos = data | selectattr("Activo", "equalto", "Active") | list %}
+                {% set activos = data | selectattr("Estado", "equalto", "Active") | list %}
                 <h1>{{ activos | length }}</h1>
                 
               </h1>
@@ -208,7 +208,7 @@
                 </td>
                 <td class="actions-cell">
                   <div class="buttons right nowrap">
-                    <a href="{{ url_for('AdminRoutes.show_recluses', id=i.ID) }}" class="button small green --jb-modal"  data-target="sample-modal-2" type="button">
+                    <a href="{{ url_for('AdminRoutes.edit_recluses', id=i.ID) }}" class="button small green --jb-modal"  data-target="sample-modal-2" type="button">
                       <span class="icon"><i class="mdi mdi-eye"></i></span>
                     </a>
                     <a href="" class="button small red --jb-modal" data-target="sample-modal" type="button">
